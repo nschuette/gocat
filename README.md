@@ -1,8 +1,11 @@
 # gocat
 
-A simple command-line tool that concatenates and prints files to stdout.
+> [!IMPORTANT]
+> This was a **learning exercise** to practice Go fundamentals: command-line argument parsing, file I/O, and string manipulation.
 
-Built as a Go learning exercise, inspired by the Unix `cat` utility.
+Gocat is a simple command-line tool that concatenates and prints files to stdout.
+
+It reimplements the core functionality of the Unix `cat` utility, including common flags for displaying line numbers, showing whitespace, and squeezing empty lines.
 
 ## Usage
 
@@ -36,3 +39,7 @@ echo "hello" | gocat -E
 ```bash
 go build -o gocat .
 ```
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

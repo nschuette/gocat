@@ -8,19 +8,19 @@ import (
 	"strings"
 )
 
-type Options struct {
-	NumberLines    bool
-	NumberNonEmpty bool
-	Squeeze        bool
-	ShowEnds       bool
-	ShowTabs       bool
-	ShowAll        bool
+type options struct {
+	numberLines    bool
+	numberNonEmpty bool
+	squeeze        bool
+	showEnds       bool
+	showTabs       bool
+	showAll        bool
 }
 
 func main() {
-	opts := &Options{}
-	registerFlags(opts)
+	opts := &options{}
 
+	registerFlags(opts)
 	flag.Parse()
 
 	files := flag.Args()
@@ -42,13 +42,13 @@ func main() {
 	}
 }
 
-func registerFlags(opts *Options) {
-	flag.BoolVar(&opts.NumberLines, "n", false, "Number all output lines")
-	flag.BoolVar(&opts.NumberNonEmpty, "b", false, "Number only non-empty lines")
-	flag.BoolVar(&opts.Squeeze, "s", false, "Suppress repeated empty lines")
-	flag.BoolVar(&opts.ShowEnds, "E", false, "Display $ at the end of each line")
-	flag.BoolVar(&opts.ShowTabs, "T", false, "Display tabs as ^I")
-	flag.BoolVar(&opts.ShowAll, "A", false, "Shorthand for -E -T")
+func registerFlags(opts *options) {
+	flag.BoolVar(&opts.numberLines, "n", false, "Number all output lines")
+	flag.BoolVar(&opts.numberNonEmpty, "b", false, "Number only non-empty lines")
+	flag.BoolVar(&opts.squeeze, "s", false, "Suppress repeated empty lines")
+	flag.BoolVar(&opts.showEnds, "E", false, "Display $ at the end of each line")
+	flag.BoolVar(&opts.showTabs, "T", false, "Display tabs as ^I")
+	flag.BoolVar(&opts.showAll, "A", false, "Shorthand for -E -T")
 }
 
 func openFile(file string) (*os.File, error) {
@@ -59,7 +59,7 @@ func openFile(file string) (*os.File, error) {
 	return os.Open(file)
 }
 
-func processFile(file *os.File, opts *Options) {
+func processFile(file *os.File, opts *options) {
 	lineNum := 0
 	lastEmptyLine := false
 
@@ -70,19 +70,19 @@ func processFile(file *os.File, opts *Options) {
 		line := sc.Text()
 		isEmptyLine := line == ""
 
-		if opts.Squeeze && isEmptyLine && lastEmptyLine {
+		if opts.squeeze && isEmptyLine && lastEmptyLine {
 			continue
 		}
 		lastEmptyLine = isEmptyLine
 
-		shouldNumberLine := opts.NumberLines || (opts.NumberNonEmpty && line != "")
+		shouldNumberLine := opts.numberLines || (opts.numberNonEmpty && line != "")
 		if shouldNumberLine {
 			line = fmt.Sprintf("%6d\t%s", lineNum, line)
 		}
-		if opts.ShowEnds || opts.ShowAll {
+		if opts.showEnds || opts.showAll {
 			line = fmt.Sprintf("%s$", line)
 		}
-		if opts.ShowTabs || opts.ShowAll {
+		if opts.showTabs || opts.showAll {
 			line = strings.ReplaceAll(line, "\t", "^I")
 		}
 
